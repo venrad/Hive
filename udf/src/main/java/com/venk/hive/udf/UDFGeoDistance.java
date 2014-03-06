@@ -5,7 +5,7 @@ import org.apache.hadoop.hive.ql.exec.UDF;
 
 @Description (
 		name = "geoDistance",
-		value = "_FUNC_(str) - Calculates a distance between two points when Latitude and Longitude are given",
+		value = "_FUNC_(str) - Calculates a distance between two stores when Latitude and Longitude are given",
 		extended = "Example:\n" +
 		"  > SELECT geoDistance(store1.lat1, store1.lon1, store2.lat2, store2.lon2) FROM STORES stores1;\n" +
 		"  CROSS JOIN STORES stores2 WHERE store1.id = 'ABC' and store2.id ='DEF'"
@@ -13,12 +13,9 @@ import org.apache.hadoop.hive.ql.exec.UDF;
 		)
 public class UDFGeoDistance extends UDF {
 	
-	public double evaluate(double lat1, double lon1, double lat2, double lon2){
+	public double evaluate(Double lat1, Double lon1, Double lat2, Double lon2){
 			double retVal =0.0;
 			
-			if (new Double(lat1) == null || new Double(lat2) == null || new Double(lon1) == null || new Double(lon2) == null ) {
-				return 0.0;
-			}
 			try {
 				retVal = distanceFormula4(lat1,lat2,lon1,lon2, 1);
 			} catch(Exception e) {
@@ -27,7 +24,7 @@ public class UDFGeoDistance extends UDF {
 		return  Math.round(retVal * 100.0)/100.0;
 	}
 	
-	public double evaluate(double lat1, double lon1, double lat2, double lon2, int milesOrKms) {
+	public double evaluate(Double lat1, Double lon1, Double lat2, Double lon2, int milesOrKms) {
 		return distanceFormula4(lat1, lat2, lon1, lon2, milesOrKms);
 	}
 	/**
@@ -38,10 +35,11 @@ public class UDFGeoDistance extends UDF {
 	 * @param milesOrKms - 1 for miles and 0 for kilometers
 	 * @return  distance in Miles
 	 */
-	private double distanceFormula4(double lat1, double lat2, double lon1, double lon2, int milesOrKms) {
+	private double distanceFormula4(Double lat1, Double lat2, Double lon1, Double lon2, int milesOrKms) {
 		
 		double R = 6371.0; // Earth's radius in Kms
-		double milesToKms = 1.60934;
+		double milesToKms = 1.60934; //Miles to Kilometers conversion 
+		
 		double deltaLat = Math.toRadians((lat2 - lat1));
 		double deltaLon = Math.toRadians((lon2 - lon1));
 		
